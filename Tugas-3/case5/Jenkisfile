@@ -1,0 +1,80 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
+pipeline {
+	agent{
+		label 'build-agent'
+	}
+	stages {
+	
+		stage('Build'){
+	    	steps{
+	       		sh 'docker compose up -d'
+	    	}
+		}
+	    stage('UNIT TEST') {
+        	steps{
+            	sh 'python3 ~/workspace/weather_app/app/test.py'
+        	}
+    	}
+		stage('Delivery'){
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'dockerhub-pwd', variable: 'dockerhubpwd')]) {
+                   sh 'docker login -u sigler05 -p ${dockerhubpwd}'
+					}
+					sh '''
+					docker tag weather_app_app sigler05/weather_app_${BUILD_ID}
+                    docker push sigler05/weather_app_${BUILD_ID}
+				   '''
+                }
+            }
+        }
+		stage('Deploy'){
+			agent{
+				label 'deploy-agent'
+			}
+			steps{
+				sh'''
+					docker compose down
+					docker system prune -a --volumes
+					docker compose up -d
+					
+				'''
+			}
+		}
+		
+	}
+
+	post{
+		success{
+			slackSend channel: '#succeeded-build',
+            color: COLOR_MAP[currentBuild.currentResult],
+            message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL} \n ${currentBuild.getBuildCauses()[0].shortDescription}"	
+		}
+		failure{
+			slackSend failOnError:true, channel: '#devops-alerts',
+        	color: COLOR_MAP[currentBuild.currentResult],
+        	message:"Build failed  - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>) \n ${currentBuild.getBuildCauses()[0].shortDescription}"
+		}
+		always{
+			sh '''
+				docker compose down 
+				docker rmi -f $(docker images -aq)
+				'''
+				/*or docker system prune -a --volumes to remove all stopped containers, unused networks, dangling images, unused volumes from the Docker system*/
+			
+			cleanWs()
+			dir("${env.WORKSPACE}@tmp") {
+      			deleteDir()
+    		}
+    		dir("${env.WORKSPACE}@script") {
+    		  deleteDir()
+    		}
+    		dir("${env.WORKSPACE}@script@tmp") {
+    		  deleteDir()
+    		}
+		}
+	}    
+}
