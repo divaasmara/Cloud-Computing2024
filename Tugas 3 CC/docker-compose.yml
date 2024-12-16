@@ -1,0 +1,26 @@
+version: '3'
+services:
+  weather-api:
+    image: php:7.4-apache
+    container_name: weather-api
+    ports:
+      - "8080:80"
+    volumes:
+      - ./weather-api:/var/www/html
+    networks:
+      - weather-net
+  
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-weather
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: weatherdb
+    ports:
+      - "3306:3306"
+    networks:
+      - weather-net
+
+networks:
+  weather-net:
+    driver: bridge
