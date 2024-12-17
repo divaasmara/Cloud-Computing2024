@@ -1,0 +1,46 @@
+---
+- name: Setup Web Server with Apache and Website
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Install Apache Web Server
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Install Git
+      apt:
+        name: git
+        state: present
+
+    - name: Add safe.directory to Git configuration
+      command: git config --global --add safe.directory /var/www/html/web-sample-6
+      become: yes
+
+    - name: Clone website from GitHub
+      git:
+        repo: "https://github.com/rm77/web-sample-6.git"
+        dest: /var/www/html/web-sample-6
+        update: yes
+
+    - name: Set proper permissions for the website directory
+      file:
+        path: /var/www/html/web-sample-6
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Ensure Apache is running (for WSL environment)
+      ansible.builtin.command:
+        cmd: apache2ctl start
+
+    - name: Verify Apache is listening on port 80 using ss
+      ansible.builtin.command:
+        cmd: ss -tuln
+      register: ss_output
+
+    - name: Check if Apache is listening on port 80
+      debug:
+        msg: "{{ ss_output.stdout }}"
+      when: "'80' in ss_output.stdout"

@@ -1,0 +1,61 @@
+---
+- name: Setup Database Server and phpMyAdmin
+  hosts: dbserver
+  become: yes
+  tasks:
+    - name: Install MariaDB server
+      apt:
+        name: mariadb-server
+        state: present
+
+    - name: Start and enable MariaDB service
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Install Python MySQL client
+      apt:
+        name: python3-mysql.connector
+        state: present
+
+    - name: Install phpMyAdmin
+      apt:
+        name: phpmyadmin
+        state: present
+
+    - name: Configure Apache to include phpMyAdmin
+      lineinfile:
+        path: /etc/apache2/apache2.conf
+        line: "Include /etc/phpmyadmin/apache.conf"
+
+    - name: Restart Apache service to apply phpMyAdmin config
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Create MySQL user for phpMyAdmin
+      mysql_user:
+        name: "phpmyadminuser"
+        password: "1234"
+        host: "localhost"
+        state: present
+        priv: "*.*:ALL"
+        login_user: "root"
+        login_password: "mydb6789tyui"
+
+    - name: Create a database for phpMyAdmin user (optional)
+      mysql_db:
+        name: "phpmyadmin_db"
+        state: present
+        login_user: "root"
+        login_password: "mydb6789tyui"
+
+    - name: Grant all privileges to phpMyAdmin user
+      mysql_user:
+        name: "phpmyadminuser"
+        host: "localhost"
+        priv: "phpmyadmin_db.*:ALL"
+        state: present
+        login_user: "root"
+        login_password: "mydb6789tyui"
