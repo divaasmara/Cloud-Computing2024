@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: weather_data
+    volumes:
+      - db_data:/var/lib/mysql
+
+  weather-fetcher:
+    build:
+      context: ./weather-fetcher
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=example
+      - DB_NAME=weather_data
+
+  php:
+    image: php:fpm-alpine
+    volumes:
+      - ./html:/usr/share/nginx/html
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - php
+    volumes:
+      - ./html:/usr/share/nginx/html
+
+volumes:
+  db_data:
