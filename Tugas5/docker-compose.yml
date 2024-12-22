@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  app:
+      deploy:
+          replicas: 2
+      build: 
+          context: app
+      ports:
+          - "5000"
+
+  nginx:
+      image: nginx:alpine
+      volumes:
+          - ./flask_app.conf:/etc/nginx/conf.d/default.conf:ro  #copy and map it for future changes
+      depends_on: 
+          - app
+      ports:
+          - "80:80"
