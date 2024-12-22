@@ -31,5 +31,5 @@ kind: Secret
 metadata:
   name: openweather-key
 type: Opaque
-data:
-  api-key: <BASE64_ENCODED_API_KEY>
+stringData:
+  api-key: "your-api-key"
