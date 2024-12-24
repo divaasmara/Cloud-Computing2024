@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: flask-app
-          image: sigler05/weather_app:latest
+          image: eileithyi4l/weather_app:latest
           ports:
             - containerPort: 5000
           env:
