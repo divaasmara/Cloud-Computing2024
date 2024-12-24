@@ -32,4 +32,4 @@ metadata:
   name: openweather-key
 type: Opaque
 stringData:
-  api-key: "your-api-key"
+  api-key: "876c721a9fef471b9e0175307242212"
