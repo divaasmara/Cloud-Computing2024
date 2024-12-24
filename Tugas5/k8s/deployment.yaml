@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: weather-app
+  namespace: weather-app
   labels:
     app: weather-app
 spec:
@@ -30,6 +31,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: openweather-key
+  namespace: weather-app
 type: Opaque
 stringData:
   api-key: "876c721a9fef471b9e0175307242212"
