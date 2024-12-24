@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 weather_data = {}
 
-# API key Anda
+# API key 
 API_KEY = "876c721a9fef471b9e0175307242212"
 
 
