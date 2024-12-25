@@ -2,11 +2,10 @@ import os
 import requests
 from datetime import datetime
 from flask import Flask, render_template, request
+import pycountry
 import socket
-import logging
 
 app = Flask(__name__)
-logging.basicConfig(level=logging.DEBUG)
 
 weather_data = {}
 
