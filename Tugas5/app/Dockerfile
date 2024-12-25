@@ -16,4 +16,4 @@ RUN pip install -r requirements.txt
 # Set the user to run the application
 USER $USER
 # Command to run the application with increased Gunicorn timeout
-CMD [ "gunicorn", "--timeout", "120", "--bind", "0.0.0.0:5000", "wsgi:app" ]
+CMD [ "gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app" ]
