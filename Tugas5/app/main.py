@@ -10,16 +10,18 @@ logging.basicConfig(level=logging.DEBUG)
 
 weather_data = {}
 
-API_KEY = os.getenv("key")
-print(f"Using API Key: {API_KEY}")
+# API key
+API_KEY = "876c721a9fef471b9e0175307242212"
 
 def name_to_cord(location):
+    """
+    Mendapatkan koordinat lokasi menggunakan WeatherAPI.
+    """
     res = requests.get(
         f"http://api.weatherapi.com/v1/search.json?key={API_KEY}&q={location}"
     ).json()
-    app.logger.debug(f"Location API Response: {res}")
 
-    if not res or (isinstance(res, dict) and 'error' in res):
+    if not res or isinstance(res, dict) and 'error' in res:
         return False
 
     weather_data['lat'] = res[0]["lat"]
