@@ -6,11 +6,12 @@ import pycountry
 import socket
 
 app = Flask(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 weather_data = {}
 
-# API key
-API_KEY = "876c721a9fef471b9e0175307242212"
+API_KEY = os.getenv("key")
+print(f"Using API Key: {API_KEY}")
 
 def name_to_cord(location):
     """
