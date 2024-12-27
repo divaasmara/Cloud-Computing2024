@@ -1,14 +1,14 @@
+# Aplikasi Ramalan Cuaca
 Repository ini adalah dokumentasi Final Project dari mata kuliah "Komputasi Awan" yaitu, aplikasi ramalan cuaca dengan menggunakan docker dan kubernetes (minikube).
 
-Nama Kelompok:
+## Anggota Kelompok:
 1. Kartika Diva Asmara Gita (5025211039)
 2. Hana Maheswari (5025211182)
 3. Zakia Kolbi (5025211049)
 
-Berikut Langkah-Langkah Menjalankan Program:
-===========================
-1. Instalasi Docker
-===========================
+## Berikut Langkah-Langkah Menjalankan Program:
+
+### 1. Instalasi Docker
 
 - Cek Versi Docker
 docker --version
@@ -20,9 +20,7 @@ sudo systemctl enable docker
 - Tambahkan ke Grup
 sudo usermod -aG docker $USER
 
-===========================
-2. Instalasi Kubernetes (Minikube)
-===========================
+### 2. Instalasi Kubernetes (Minikube)
 
 - Install Dependencies
 sudo apt install -y curl apt-transport-https
@@ -43,9 +41,7 @@ minikube start
 - Cek cluster
 kubectl cluster-info
 
-===========================
-3. Menyiapkan Projek,  Build, dan Push Docker Image
-===========================
+### 3. Menyiapkan Projek,  Build, dan Push Docker Image
 
 - Clone Repo GitHub
 git clone https://github.com/divaasmara/Cloud-Computing2024.git
@@ -63,9 +59,7 @@ sudo docker push eileithyi4l/weather_app:latest
 
 note : ganti eileithyi4l dengan nama username docker hub kalian
 
-===========================
-4. Menyiapkan Kubernetes & Manifest Kubernetes
-===========================
+### 4. Menyiapkan Kubernetes & Manifest Kubernetes
 
 - Buat Namespace
 kubectl create namespace weather-app
@@ -74,9 +68,7 @@ kubectl create namespace weather-app
 kubectl apply -f k8s/deployment.yaml -n weather-app
 kubectl apply -f k8s/service.yaml -n weather-app
 
-===========================
-5. Menjalankan & Memverifikasi
-===========================
+### 5. Menjalankan & Memverifikasi
 
 - Cek status Pod & Service
 kubectl get pods -n weather-app
@@ -91,9 +83,7 @@ kubectl logs -l app=weather-app -n weather-app
 - tampilkan dashboard
 minikube dashboard       
 
-===========================
-7. Re-Build Perubahan Baru
-===========================
+### 7. Re-Build Perubahan Baru
 
 - Build Docker Image
 docker build --no-cache -t eileithyi4l/weather_app:latest -f app/Dockerfile ./app
